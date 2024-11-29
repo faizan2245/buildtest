@@ -27,11 +27,11 @@ jobs:
       # Run tests and build the application, store logs in a file
       - name: Build Application and Capture Logs
         run: |
-          npm run build > build.log 2>&1  # logs ko build.log file me redirect karenge
-          if [ $? -ne 0 ]; then
-            echo "Build failed"
-            exit 1
-          fi
+         set -e  # Stop script if any command fails
+         npm run build > build.log 2>&1
+         cat build.log  # Print log for debugging
+        shell: bash
+
 
       # Upload the build logs as artifacts
       - name: Upload Build Logs
