@@ -24,13 +24,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # Run tests and build the application, store logs in a file
       - name: Build Application and Capture Logs
         run: |
-         set -e  # Stop script if any command fails
-         npm run build > build.log 2>&1
-         cat build.log  # Print log for debugging
-        shell: bash
+         npm run build > build.log 2>&1 || {
+          echo "Build failed. Outputting log..."
+          cat build.log
+          exit 1
+         }
+
 
 
       # Upload the build logs as artifacts
