@@ -1,0 +1,42 @@
+name: Node.js Build Pipeline
+
+on:
+  push:
+    branches:
+      - main  # ya apni desired branch ka naam likhein
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Setup Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # apni desired Node.js version specify karein
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Run tests and build the application, store logs in a file
+      - name: Build Application and Capture Logs
+        run: |
+          npm run build > build.log 2>&1  # logs ko build.log file me redirect karenge
+          if [ $? -ne 0 ]; then
+            echo "Build failed"
+            exit 1
+          fi
+
+      # Upload the build logs as artifacts
+      - name: Upload Build Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-logs
+          path: build.log
+        
